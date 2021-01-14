@@ -2,6 +2,11 @@ import torch
 import numpy as np
 
 data_dir = '../data/processed/'
+if torch.cuda.is_available():
+    dev = "cuda:0"
+else:
+    dev = "cpu"
+device = torch.device(dev)
 
 
 class SequenceDataset(torch.utils.data.Dataset):
@@ -28,7 +33,9 @@ class SequenceDataset(torch.utils.data.Dataset):
 
         sequence = self.X[idx]
         function = torch.tensor(int(self.y[idx]))
+        function = function.to(device)
         length = torch.tensor(len(sequence))
+        function = function.to(device)
 
         sample = {'sequence': sequence, 'length': length, 'function': function}
 

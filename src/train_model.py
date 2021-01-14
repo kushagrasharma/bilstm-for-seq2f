@@ -9,6 +9,12 @@ import time
 
 models_dir = '../saved_models/'
 
+if not torch.cuda.is_available():
+    dev = "cpu"
+else:
+    dev = "cuda:0"
+device = torch.device(dev)
+
 torch.manual_seed(0)
 np.random.seed(0)
 
@@ -24,6 +30,8 @@ list_of_files = glob.glob(models_dir + '*.ckpt')
 if list_of_files:
     latest_file = max(list_of_files, key=os.path.getctime)
     model.load_state_dict(torch.load(latest_file))
+
+model.to(device)
 
 ds = SequenceDataset()
 train_len = int(len(ds) * 0.8)
@@ -42,6 +50,7 @@ for epoch in range(num_epochs):
         sequences, lengths, functions = batch['sequence'], batch['length'], batch['function']
         sequences = pad_char_sequences(sequences)
         sequences = one_hot_encode(sequences, ds.get_vocab()).float()
+        sequences, lengths, functions = sequences.to(device), lengths.to(device), functions.to(device)
 
         output = model(sequences, lengths)
         loss = criterion(output, functions)
@@ -66,6 +75,7 @@ with torch.no_grad():
         sequences, lengths, functions = batch['sequence'], batch['length'], batch['function']
         sequences = pad_char_sequences(sequences)
         sequences = one_hot_encode(sequences, ds.get_vocab())
+        sequences, lengths, functions = sequences.to(device), lengths.to(device), functions.to(device)
 
         output = model(sequences, lengths)
 
