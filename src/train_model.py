@@ -24,7 +24,7 @@ def train_model(model, vocab, train_dl, learning_rate=0.003, num_epochs=5):
             sequences, lengths, functions = batch['sequence'], batch['length'], batch['function']
             sequences = pad_char_sequences(sequences)
             sequences = one_hot_encode(sequences, vocab).float()
-            sequences, lengths, functions = sequences.to(device), lengths.to(device), functions.to(device)
+            sequences, lengths, functions = sequences.to(device), lengths.cpu(), functions.to(device)
 
             output = model(sequences, lengths)
             loss = criterion(output, functions)

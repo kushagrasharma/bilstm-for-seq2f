@@ -35,7 +35,6 @@ class SequenceDataset(torch.utils.data.Dataset):
         function = torch.tensor(int(self.y[idx]))
         function = function.to(device)
         length = torch.tensor(len(sequence))
-        function = function.to(device)
 
         sample = {'sequence': sequence, 'length': length, 'function': function}
 

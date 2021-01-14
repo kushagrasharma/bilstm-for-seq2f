@@ -27,7 +27,7 @@ def test_model(model, vocab, test_ds, test_dl) -> None:
             sequences, lengths, functions = batch['sequence'], batch['length'], batch['function']
             sequences = pad_char_sequences(sequences)
             sequences = one_hot_encode(sequences, vocab)
-            sequences, lengths, functions = sequences.to(device), lengths.to(device), functions.to(device)
+            sequences, lengths, functions = sequences.to(device), lengths.cpu(), functions.to(device)
 
             output = model(sequences, lengths)
 
